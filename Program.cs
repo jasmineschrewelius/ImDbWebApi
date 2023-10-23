@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors();
+
 // Add services to the container.
 builder.Services.AddDbContext<ApplicationDbContext>
      (options => options.UseSqlServer(
@@ -25,6 +27,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseCors(builder => builder.AllowAnyOrigin());
 
 app.MapControllers();
 
