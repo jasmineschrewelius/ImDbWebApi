@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "FHA9blJwpZAjfaH7iY9DGXzsBFjriz5TIZmdU1H9oUk=",
+  "Source": "ImDbWebApi",
+  "BasePath": "_content/ImDbWebApi",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
