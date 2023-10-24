@@ -36,10 +36,10 @@ public class MovieController : ControllerBase
         return movies;
     }
 
-    // GET https://localhost:8000/movie/{id}, exempelvis https://localhost:8000/movie/1
+    // GET https://localhost:8000/movie/{id}, ex https://localhost:8000/movie/1
     [HttpGet("{id}")]
 
-    public ActionResult<Movie> GetMovie(int id)  // search for movie with id number
+    public ActionResult<Movie> GetMovie(int id)  // Get a movie with id number
     {
         var movie = context.Movie.FirstOrDefault(x => x.Id == id);
 
@@ -61,8 +61,7 @@ public class MovieController : ControllerBase
  //     "releaseYear": 1986
 //    }
     [HttpPost]
-
-    public ActionResult<MovieDto> CreateMovie(CreateMovieRequest createMovieRequest) // model binding the information into a object
+    public ActionResult<MovieDto> CreateMovie(CreateMovieRequest createMovieRequest) // Create a movie
     {
         var movie = MapToMovie(createMovieRequest);
 
@@ -75,7 +74,24 @@ public class MovieController : ControllerBase
         return Created("", movieDto); // 201 Created
     }
 
-    private Movie MapToMovie(CreateMovieRequest createMovieRequest) // will take the data and create a movie
+    // Delete / movie/{id}
+    [HttpDelete("{id}")]
+    public ActionResult DeleteMovie(int id) // delete movie based on the id
+    {
+        var movie = context.Movie.FirstOrDefault(x => x.Id == id); // search if the movie id input is the same as a movie id in the collection of movies in database
+
+        if (movie is null) // if we dont find a movie with same id
+        {
+            return NotFound(); // return status code 404 Not Found
+        }
+
+        context.Movie.Remove(movie); // if the same movie id is found, remove from collection
+
+        context.SaveChanges(); // save the changes
+
+        return NoContent(); // return status code 204 No Content
+    }
+    private Movie MapToMovie(CreateMovieRequest createMovieRequest) // help metod to map from a request to a movie
        => new ()
        {
           Title = createMovieRequest.Title,
@@ -85,7 +101,7 @@ public class MovieController : ControllerBase
           ReleaseYear = createMovieRequest.ReleaseYear
        };
 
-    private MovieDto MapToMovieDto(Movie movie)  // will take a movie and create a movieDto
+    private MovieDto MapToMovieDto(Movie movie)  // help metod to map from a movie to a movieDto
        => new ()
        {
           Id = movie.Id,
