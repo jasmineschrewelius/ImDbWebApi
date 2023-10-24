@@ -91,6 +91,39 @@ public class MovieController : ControllerBase
 
         return NoContent(); // return status code 204 No Content
     }
+
+    // PUT /movie/{id}
+    [HttpPut("{id}")]
+    public ActionResult UpdateMovie(int id, UpdateMovieRequest updateMovieRequest)
+    {
+        // verify if Id of movie is the same as URL
+        if (updateMovieRequest.Id != id)
+        {
+            return BadRequest("ID does not match"); // if it does not match
+        }
+
+        // get movie from database
+        var movie = context.Movie.FirstOrDefault(x => x.Id == id);
+
+        // if the movie does not exist
+        if (movie is null)
+        {
+            return NotFound(); // return status code 404 Not Found
+        }
+
+        // if movie do exist, update movies attributes
+        movie.Title = updateMovieRequest.Title;
+        movie.Plot = updateMovieRequest.Plot;
+        movie.Genre = updateMovieRequest.Genre;
+        movie.Director = updateMovieRequest.Director;
+        movie.ReleaseYear = updateMovieRequest.ReleaseYear;
+
+        // save entity to database
+        context.SaveChanges();  // trigger SQL Update
+
+        // return status code 204
+        return NoContent(); 
+    }
     private Movie MapToMovie(CreateMovieRequest createMovieRequest) // help metod to map from a request to a movie
        => new ()
        {
@@ -113,6 +146,21 @@ public class MovieController : ControllerBase
        };
 
 
+}
+
+public class UpdateMovieRequest  // create DTO
+{
+     public int Id { get; set; }
+
+    public string Title { get; set; }
+
+    public string Plot { get; set; }
+
+    public string Genre { get; set; }
+
+    public string Director { get; set; }
+
+    public int ReleaseYear { get; set; }
 }
 
 public class CreateMovieRequest   // create DTO, data transfer object, it carries data between processes
